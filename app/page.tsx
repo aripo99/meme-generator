@@ -1,4 +1,5 @@
 import { FiUploadCloud } from 'react-icons/fi'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
             </span>
             <input type='file' className="hidden" />
           </label>
+          <Button className="mt-6">Generate</Button>
         </div>
       </div>
     </main>
