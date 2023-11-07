@@ -4,6 +4,7 @@ import { FiUploadCloud } from 'react-icons/fi'
 import { Button } from '@/components/ui/button'
 import { useState, FormEvent, ChangeEvent } from 'react'
 import Image from 'next/image'
+import sendImage from '@/lib/actions/openai';
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -19,6 +20,7 @@ export default function Home() {
     event.preventDefault();
     if (selectedFile) {
       const fileUrl = URL.createObjectURL(selectedFile);
+      sendImage();
       setMemeImage(fileUrl);
     }
   };
