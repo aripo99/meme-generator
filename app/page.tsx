@@ -9,6 +9,7 @@ import sendImage from '@/lib/actions/openai';
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [memeImage, setMemeImage] = useState('');
+  const [memeText, setMemeText] = useState('');
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -20,10 +21,21 @@ export default function Home() {
     event.preventDefault();
     if (selectedFile) {
       const fileUrl = URL.createObjectURL(selectedFile);
-      sendImage();
-      setMemeImage(fileUrl);
-    }
-  };
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onload = async () => {
+        let base64String = '';
+        if (typeof reader.result === 'string') {
+          // Get the base64 string portion of the Data URL
+          base64String = reader.result.split(',')[1];
+        }
+
+        const memeText = await sendImage(base64String);
+        setMemeText(memeText);
+        setMemeImage(fileUrl);
+      }
+    };
+  }
 
 
   return (
@@ -55,9 +67,9 @@ export default function Home() {
       {memeImage && (
         <div className="mt-8">
           <Image src={memeImage} alt="Uploaded Meme" className="max-w-md rounded-lg shadow-md" width={500} height={500} />
+          {memeText && <p> {memeText} </p>}
         </div>
       )}
     </main >
   )
 }
-

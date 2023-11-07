@@ -6,13 +6,11 @@ const prompt = `
 Generate a small joke to be used as a caption for the image. This would be similar to a meme.
 `;
 
-async function sendImage() {
+export default async function sendImage(base64String: string) {
     const openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
     });
-
-
-    const response = await openai.chat.completions.create({
+    const data = {
         model: "gpt-4-vision-preview",
         messages: [
             {
@@ -21,14 +19,34 @@ async function sendImage() {
                     { type: "text", text: prompt },
                     {
                         type: "image_url",
-                        image_url:
-                            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                        image_url: {
+                            url: `data:image/jpeg;base64,${base64String}`
+                        }
                     },
                 ],
             },
         ],
-    });
-    console.log(response.choices[0]);
+    };
+
+    const response = await openai.chat.completions.create(data);
+
+    if (!response) {
+        throw new Error(`API error: ${response}`);
+    }
+
+    // If the API call was successful, handle the response accordingly
+    return extractMessageContent(response);
 };
 
-export default sendImage;
+function extractMessageContent(response: any): string | null {
+    if (response && response.choices && Array.isArray(response.choices)) {
+        let firstChoice = response.choices[0];
+
+        if (firstChoice && firstChoice.message && firstChoice.message.content) {
+            return firstChoice.message.content;
+        }
+    }
+
+    return null;
+}
+
