@@ -9,6 +9,7 @@ Generate a 10 word joke to be used as a caption for the image. This would be sim
 export default async function sendImage(base64String: string) {
     const openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
+        // organization: process.env.OPENAI_ORGANIZATION,
     });
     const data = {
         model: "gpt-4-vision-preview",
