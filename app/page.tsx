@@ -35,7 +35,6 @@ export default function Home() {
 
       // Create an object URL for the compressed image
       const fileUrl = URL.createObjectURL(compressedFile);
-      setMemeImage(fileUrl);
 
       // Convert the compressed file to a base64 string
       const base64String = await imageCompression.getDataUrlFromFile(compressedFile);
@@ -46,6 +45,7 @@ export default function Home() {
       // Send the reduced image to the API
       const memeText = await sendImage(base64);
       console.log(memeText);
+      setMemeImage(fileUrl);
       setMemeText(memeText);
       setIsLoading(false);
     }
@@ -81,10 +81,30 @@ export default function Home() {
             </form>
           )}
           {memeImage && (
-            <div className="mt-8">
-              <Image src={memeImage} alt="Uploaded Meme" className="max-w-md rounded-lg shadow-md" width={500} height={500} />
-              {memeText && <p> {memeText} </p>}
-            </div>
+            <>
+              <div className="meme-container" style={{ position: 'relative', textAlign: 'center' }}>
+                <Image src={memeImage} alt="Uploaded Meme" className="max-w-md rounded-lg shadow-md" width={500} height={500} />
+                <div className="meme-text" style={{
+                  width: '100%',
+                  position: 'absolute',
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  color: 'white',
+                  padding: '10px',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                }}>
+                  {memeText}
+                </div>
+              </div>
+              <Button className="mt-6" onClick={() => {
+                setMemeImage('');
+                setMemeText('');
+              }
+              }>
+                Generate Another
+              </Button>
+            </>
           )}
         </>
       )}
