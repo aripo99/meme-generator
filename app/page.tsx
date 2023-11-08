@@ -6,6 +6,7 @@ import { useState, FormEvent, ChangeEvent } from 'react'
 import Image from 'next/image'
 import sendImage from '@/lib/actions/openai';
 import Spinner from '@/components/Spinner';
+import imageCompression from 'browser-image-compression';
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -19,29 +20,36 @@ export default function Home() {
     }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedFile) {
       setIsLoading(true);
-      const fileUrl = URL.createObjectURL(selectedFile);
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onload = async () => {
-        let base64String = '';
-        if (typeof reader.result === 'string') {
-          // Get the base64 string portion of the Data URL
-          base64String = reader.result.split(',')[1];
-        }
+      const options = {
+        maxSizeMB: 1, // the maximum size of the output file in megabytes
+        maxWidthOrHeight: 1024, // the maximum width or height of the output image, maintains aspect ratio
+        useWebWorker: true // enable multi-threading for better performance
+      };
 
-        const memeText = await sendImage(base64String);
-        setMemeText(memeText);
-        console.log(memeText);
-        setMemeImage(fileUrl);
-        setIsLoading(false);
-      }
-    };
-  }
+      // Compress the image file
+      const compressedFile = await imageCompression(selectedFile, options);
 
+      // Create an object URL for the compressed image
+      const fileUrl = URL.createObjectURL(compressedFile);
+      setMemeImage(fileUrl);
+
+      // Convert the compressed file to a base64 string
+      const base64String = await imageCompression.getDataUrlFromFile(compressedFile);
+
+      // Split the base64 string and prepare it for the API
+      const base64 = base64String.split(',')[1];
+
+      // Send the reduced image to the API
+      const memeText = await sendImage(base64);
+      console.log(memeText);
+      setMemeText(memeText);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">

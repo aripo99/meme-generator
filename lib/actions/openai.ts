@@ -3,7 +3,7 @@
 import OpenAI from 'openai';
 
 const prompt = `
-Generate a small joke to be used as a caption for the image. This would be similar to a meme.
+Generate a 10 word joke to be used as a caption for the image. This would be similar to a meme. Don't use emojis.
 `;
 
 export default async function sendImage(base64String: string) {
@@ -26,10 +26,12 @@ export default async function sendImage(base64String: string) {
                 ],
             },
         ],
+        max_tokens: 1200,
     };
 
     const response = await openai.chat.completions.create(data);
 
+    console.log(response);
     if (!response) {
         throw new Error(`API error: ${response}`);
     }
@@ -43,7 +45,9 @@ function extractMessageContent(response: any): string | null {
         let firstChoice = response.choices[0];
 
         if (firstChoice && firstChoice.message && firstChoice.message.content) {
-            return firstChoice.message.content;
+            return firstChoice.message.content.trim()
+                .replace(/^"|"$/g, '')   // Removes leading and trailing quotes
+                .replace(/\.$/, '');     // Removes a trailing period
         }
     }
 
