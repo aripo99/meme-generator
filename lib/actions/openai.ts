@@ -29,9 +29,8 @@ export default async function sendImage(base64String: string) {
         max_tokens: 1200,
     };
 
-    const response = await openai.chat.completions.create(data);
+    const response = await openai.chat.completions.create(data as any);
 
-    console.log(response);
     if (!response) {
         throw new Error(`API error: ${response}`);
     }

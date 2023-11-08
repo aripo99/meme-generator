@@ -44,7 +44,7 @@ export default function Home() {
 
       // Send the reduced image to the API
       const memeText = await sendImage(base64);
-      console.log(memeText);
+
       setMemeImage(fileUrl);
       setMemeText(memeText);
       setIsLoading(false);
