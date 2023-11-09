@@ -50,8 +50,6 @@ export default function Home() {
         }
       }).then(res => res.json());
 
-      console.log(memeText);
-
       setMemeImage(fileUrl);
       setMemeText(memeText);
       setIsLoading(false);
