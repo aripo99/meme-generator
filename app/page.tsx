@@ -4,7 +4,6 @@ import { FiUploadCloud } from 'react-icons/fi'
 import { Button } from '@/components/ui/button'
 import { useState, FormEvent, ChangeEvent } from 'react'
 import Image from 'next/image'
-import sendImage from '@/lib/actions/openai';
 import Spinner from '@/components/Spinner';
 import imageCompression from 'browser-image-compression';
 
@@ -43,7 +42,15 @@ export default function Home() {
       const base64 = base64String.split(',')[1];
 
       // Send the reduced image to the API
-      const memeText = await sendImage(base64);
+      const memeText = await fetch('/api/meme', {
+        method: 'POST',
+        body: JSON.stringify({ base64 }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json());
+
+      console.log(memeText);
 
       setMemeImage(fileUrl);
       setMemeText(memeText);

@@ -6,5 +6,10 @@ const nextConfig = {
         bodySizeLimit: '2mb',
       },
     },
+    api: {
+        bodyParser: {
+            sizeLimit: '4mb' // Set desired value here
+        }
+    }
 }
 module.exports = nextConfig
