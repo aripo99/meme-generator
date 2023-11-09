@@ -76,7 +76,7 @@ export default function Home() {
                   <label className="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
                     <FiUploadCloud className="w-8 h-8" />
                     <span className="mt-2 text-base leading-normal">
-                      {selectedFile ? 'Image Selected' : 'Select a file'}
+                      {selectedFile ? 'Image Selected' : 'Select an Image'}
                     </span>
                     <input type='file' className="hidden" onChange={handleFileChange} />
                   </label>
