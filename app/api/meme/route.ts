@@ -4,7 +4,7 @@ import { Redis } from '@upstash/redis';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    // organization: process.env.OPENAI_ORGANIZATION,
+    organization: process.env.OPENAI_ORGANIZATION,
 });
 
 const redis = Redis.fromEnv();
@@ -19,7 +19,6 @@ Generate a 10 word joke to be used as a caption for the image. This would be sim
 export async function POST(req: Request) {
     const ip = req.headers.get('x-forwarded-for');
 
-    console.log(ip);
     const { success, limit, reset, remaining } = await ratelimit.limit(ip as string);
 
     if (!success) {
