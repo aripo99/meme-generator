@@ -10,7 +10,7 @@ const openai = new OpenAI({
 const redis = Redis.fromEnv();
 const ratelimit = new Ratelimit({
     redis: redis,
-    limiter: Ratelimit.slidingWindow(10, '10 s'), // Adjust the limit as needed
+    limiter: Ratelimit.slidingWindow(5, '60 s'), // Limit to 5 requests per 60 seconds
 });
 
 const prompt = `
